@@ -7,8 +7,8 @@ export default function HomePage() {
   const { data: session } = useSession();
 
   return (
-    <div className="flex items-center justify-center h-screen">
-      <div className="text-center p-10 bg-white rounded-lg shadow-lg">
+    <div className="flex items-center justify-center h-4/5">
+      <div className="flex flex-col justify-center items-center text-center w-1/2 h-1/2 bg-white rounded-lg shadow-lg">
         <h1 className="text-4xl font-bold text-gray-800">나만의 레시피</h1>
         <p className="mt-4 text-lg text-gray-600">레시피 만들기 웹사이트</p>
         {session?.user ? (

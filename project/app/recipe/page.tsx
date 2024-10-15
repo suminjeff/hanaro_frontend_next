@@ -26,7 +26,7 @@ export default function RecipePage() {
   }, [session]);
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-96">
+    <div className="flex flex-col justify-center items-center h-4/5">
       {recipes.length > 0 ? (
         recipes.map((item, index) => {
           return <RecipeCard recipe={item} key={index} />;

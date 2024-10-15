@@ -45,6 +45,7 @@ const handler = NextAuth({
     signIn: "/login",
     signOut: "/logout",
   },
+  secret: process.env.NEXTAUTH_SECRET,
 });
 
 export { handler as GET, handler as POST };

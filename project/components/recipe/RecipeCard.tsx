@@ -1,6 +1,7 @@
 import Link from "next/link";
 import React from "react";
 
+// 랜덤 색상 생성 함수
 export default function RecipeCard({
   recipe,
 }: {
@@ -8,7 +9,7 @@ export default function RecipeCard({
     id: Date;
     ingredients: string[];
     orders: string[];
-    tags: string[];
+    tags: { value: string; color: string }[];
     title: string;
   };
 }) {
@@ -19,13 +20,13 @@ export default function RecipeCard({
 
       {/* 태그들 */}
       <div className="flex space-x-2 mb-4">
-        {recipe.tags.map((item, index) => {
+        {recipe.tags.map((tag, index) => {
           return (
             <span
               key={index}
-              className="bg-green-200 text-green-800 text-sm font-medium px-2 py-1 rounded-full"
+              className={`${tag.color} text-white text-sm font-medium px-2 py-1 rounded-full`}
             >
-              #{item}
+              #{tag.value}
             </span>
           );
         })}

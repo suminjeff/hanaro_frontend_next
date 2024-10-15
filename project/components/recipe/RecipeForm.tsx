@@ -4,6 +4,20 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
+// 랜덤 색상 생성 함수
+const getRandomColor = () => {
+  const colors = [
+    "bg-red-500",
+    "bg-green-500",
+    "bg-blue-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-teal-500",
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
 export default function RecipeForm() {
   const { data: session } = useSession();
   const user = session?.user;
@@ -12,7 +26,7 @@ export default function RecipeForm() {
 
   const [title, setTitle] = useState("");
   const [tag, setTag] = useState("");
-  const [tags, setTags] = useState([]);
+  const [tags, setTags] = useState<{ value: string; color: string }[]>([]);
   const [ingredient, setIngredient] = useState("");
   const [ingredients, setIngredients] = useState([]);
   const [order, setOrder] = useState("");
@@ -21,7 +35,7 @@ export default function RecipeForm() {
   const handleAddTag = (e) => {
     e.preventDefault();
     if (tag !== "") {
-      setTags([...tags, tag]);
+      setTags([...tags, { value: tag, color: getRandomColor() }]);
       setTag("");
     }
   };
@@ -68,28 +82,25 @@ export default function RecipeForm() {
       return;
     }
 
-    // 현재 유저의 이름을 기반으로 저장된 레시피 목록 가져오기
     const savedRecipes = JSON.parse(localStorage.getItem(user.name) || "[]");
 
-    // 새 레시피 객체 생성
     const newRecipe = {
       id: Date.now(),
       title,
-      tags,
+      tags: tags.map(({ value, color }) => {
+        return { value, color };
+      }),
       ingredients,
       orders,
       versions: [],
     };
 
-    // 기존 레시피 배열에 새 레시피 추가
     const updatedRecipes = [...savedRecipes, newRecipe];
 
-    // 업데이트된 레시피 목록을 localStorage에 저장
     localStorage.setItem(user.name, JSON.stringify(updatedRecipes));
 
     alert("레시피가 저장되었습니다!");
 
-    // 상태 초기화
     setTitle("");
     setTags([]);
     setIngredients([]);
@@ -98,7 +109,7 @@ export default function RecipeForm() {
   };
 
   return (
-    <form className="flex flex-col justify-center items-center w-full p-6 space-y-6 bg-white">
+    <form className="flex flex-col justify-center items-center w-full h-full overflow-auto p-6 space-y-6 bg-white">
       <p className="text-2xl font-bold">새 레시피 추가</p>
       <div className="w-full">
         <label
@@ -141,31 +152,29 @@ export default function RecipeForm() {
         </div>
         {/* 태그 목록 */}
         <div className="flex flex-wrap mt-3 gap-3">
-          {tags.map((tag, index) => {
-            return (
-              <div
-                key={index}
-                className="flex bg-gray-500 text-white px-2 py-1 rounded-lg items-center gap-1"
+          {tags.map((tag, index) => (
+            <div
+              key={index}
+              className={`flex ${tag.color} text-white px-2 py-1 rounded-lg items-center gap-1`}
+            >
+              <span>#{tag.value}</span>
+              <svg
+                onClick={() => handleDeleteTag(index)}
+                className="w-4 h-4 cursor-pointer"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
               >
-                <span>#{tag}</span>
-                <svg
-                  onClick={() => handleDeleteTag(index)}
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 6l12 12M6 18L18 6"
-                  />
-                </svg>
-              </div>
-            );
-          })}
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 6l12 12M6 18L18 6"
+                />
+              </svg>
+            </div>
+          ))}
         </div>
       </div>
       {/* 재료 목록 */}
@@ -192,27 +201,28 @@ export default function RecipeForm() {
             추가
           </button>
         </div>
-        <ul>
+        <ul className="mt-3">
           {ingredients.map((item, index) => (
-            <li key={index}>
-              <div className="flex items-center">
-                <span>{item}</span>
-                <svg
-                  onClick={() => handleDeleteIngredient(index)}
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 6l12 12M6 18L18 6"
-                  />
-                </svg>
-              </div>
+            <li
+              key={index}
+              className="flex items-center justify-between bg-gray-200 rounded-md px-3 py-2 mb-2"
+            >
+              <span className="font-medium">{item}</span>
+              <svg
+                onClick={() => handleDeleteIngredient(index)}
+                className="w-5 h-5 cursor-pointer text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 6l12 12M6 18L18 6"
+                />
+              </svg>
             </li>
           ))}
         </ul>
@@ -241,37 +251,37 @@ export default function RecipeForm() {
             추가
           </button>
         </div>
-        <ul>
+        <ul className="mt-3">
           {orders.map((item, index) => (
-            <li key={index}>
-              <div className="flex items-center">
-                <span>
-                  {index + 1}. {item}
-                </span>
-                <svg
-                  onClick={() => handleDeleteOrder(index)}
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M6 6l12 12M6 18L18 6"
-                  />
-                </svg>
-              </div>
+            <li
+              key={index}
+              className="flex items-center justify-between bg-gray-200 rounded-md px-3 py-2 mb-2"
+            >
+              <span className="font-medium">
+                {index + 1}. {item}
+              </span>
+              <svg
+                onClick={() => handleDeleteOrder(index)}
+                className="w-5 h-5 cursor-pointer text-red-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth="2"
+                  d="M6 6l12 12M6 18L18 6"
+                />
+              </svg>
             </li>
           ))}
         </ul>
       </div>
       <button
-        className="w-full py-2 px-4 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
-        type="button"
         onClick={handleSaveRecipe}
+        className="w-full py-3 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-200"
       >
         레시피 저장
       </button>
