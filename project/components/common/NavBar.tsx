@@ -1,13 +1,15 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation"; // 현재 경로를 가져오기 위한 hook
 import { useSession, signOut } from "next-auth/react";
 
 export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
+
   const { data: session } = useSession();
+
   const pathname = usePathname(); // 현재 경로를 가져옴
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -25,57 +27,59 @@ export default function NavBar() {
           <Link href="/">나만의 레시피</Link>
         </div>
 
-        {/* 데스크탑 네비게이션 링크 */}
-        <ul className="hidden md:flex space-x-8 text-gray-300">
-          <li className="relative group">
-            {session ? (
-              <button
-                className={`text-lg font-medium ${isActive(
-                  "/logout"
-                )} transition duration-300`}
-                onClick={() => signOut()}
-              >
-                로그아웃
-              </button>
-            ) : (
-              <Link
-                href="/login"
-                className={`text-lg font-medium ${isActive(
-                  "/login"
-                )} transition duration-300`}
-              >
-                로그인
-              </Link>
+        {/* 사용자 정보 및 데스크탑 네비게이션 링크 */}
+        <div className="flex items-center space-x-4">
+          <ul className="hidden md:flex space-x-8 text-gray-300">
+            <li className="relative group">
+              {session ? (
+                <button
+                  className={`text-lg font-medium ${isActive(
+                    "/logout"
+                  )} transition duration-300`}
+                  onClick={() => signOut()}
+                >
+                  로그아웃
+                </button>
+              ) : (
+                <Link
+                  href="/login"
+                  className={`text-lg font-medium ${isActive(
+                    "/login"
+                  )} transition duration-300`}
+                >
+                  로그인
+                </Link>
+              )}
+              <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+            </li>
+            {session && (
+              <>
+                <li className="relative group">
+                  <Link
+                    href="/recipe"
+                    className={`text-lg font-medium ${isActive(
+                      "/recipe"
+                    )} transition duration-300`}
+                  >
+                    레시피 목록
+                  </Link>
+                  <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+                </li>
+                <li className="relative group">
+                  <Link
+                    href="/recipe/add"
+                    className={`text-lg font-medium ${isActive(
+                      "/recipe/add"
+                    )} transition duration-300`}
+                  >
+                    레시피 만들기
+                  </Link>
+                  <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
+                </li>
+              </>
             )}
-            <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-          </li>
-          {session && (
-            <>
-              <li className="relative group">
-                <Link
-                  href="/recipe"
-                  className={`text-lg font-medium ${isActive(
-                    "/recipe"
-                  )} transition duration-300`}
-                >
-                  레시피 목록
-                </Link>
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-              </li>
-              <li className="relative group">
-                <Link
-                  href="/recipe/add"
-                  className={`text-lg font-medium ${isActive(
-                    "/recipe/add"
-                  )} transition duration-300`}
-                >
-                  레시피 만들기
-                </Link>
-                <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
-              </li>
-            </>
-          )}
-        </ul>
+          </ul>
+        </div>
 
         {/* 모바일 메뉴 버튼 */}
         <div className="md:hidden text-white">

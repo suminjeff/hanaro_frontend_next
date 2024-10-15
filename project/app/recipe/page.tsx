@@ -2,28 +2,33 @@
 
 import RecipeCard from "@/components/recipe/RecipeCard";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 
 export default function RecipePage() {
-  const router = useRouter();
-  const { data: socialSession } = useSession(); //세션 정보를 가져옴
+  const { data: session } = useSession(); //세션 정보를 가져옴
+  const [recipes, setRecipes] = useState([]);
+
   useEffect(() => {
-    if (socialSession) {
-      router.push("/recipe");
-    } else {
-      router.push("/login");
+    if (session) {
+      const username = session.user?.name;
+      if (!username) {
+        alert("로그인이 필요합니다.");
+        return;
+      }
+      if (localStorage.getItem(username)) {
+        const userRecipes = localStorage.getItem(username);
+        setRecipes(JSON.parse(userRecipes!));
+      } else {
+        localStorage.setItem(username, JSON.stringify([]));
+      }
     }
-  });
+  }, [session]);
+
   return (
-    <div className="flex flex-col justify-center items-center">
-      <RecipeCard />
-      <RecipeCard />
-      <RecipeCard />
-      <RecipeCard />
-      <RecipeCard />
-      <RecipeCard />
-      <RecipeCard />
+    <div className="flex flex-col justify-center items-center min-h-96">
+      {recipes.map((item, index) => {
+        return <RecipeCard recipe={item} key={index} />;
+      })}
     </div>
   );
 }
