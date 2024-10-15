@@ -9,11 +9,18 @@ export default function NavBar() {
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: session } = useSession();
+  const [isLoggedIn, setIsLoggedin] = useState(false);
 
   const pathname = usePathname(); // 현재 경로를 가져옴
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    if (session?.user) {
+      setIsLoggedin(true);
+    }
+  }, [session]);
 
   // 경로가 일치하면 활성화된 스타일을 추가하는 함수
   const isActive = (href: string) =>
@@ -31,12 +38,12 @@ export default function NavBar() {
         <div className="flex items-center space-x-4">
           <ul className="hidden md:flex space-x-8 text-gray-300">
             <li className="relative group">
-              {session ? (
+              {isLoggedIn ? (
                 <button
                   className={`text-lg font-medium ${isActive(
                     "/logout"
                   )} transition duration-300`}
-                  onClick={() => signOut()}
+                  onClick={() => signOut({ callbackUrl: "/login" })}
                 >
                   로그아웃
                 </button>
@@ -52,7 +59,7 @@ export default function NavBar() {
               )}
               <span className="absolute left-0 bottom-0 w-0 h-0.5 bg-blue-500 transition-all duration-300 group-hover:w-full"></span>
             </li>
-            {session && (
+            {isLoggedIn && (
               <>
                 <li className="relative group">
                   <Link
@@ -80,7 +87,6 @@ export default function NavBar() {
             )}
           </ul>
         </div>
-
         {/* 모바일 메뉴 버튼 */}
         <div className="md:hidden text-white">
           <button onClick={toggleMenu} className="focus:outline-none">
@@ -105,7 +111,7 @@ export default function NavBar() {
       {/* 모바일 네비게이션 메뉴 */}
       <div
         className={`${
-          isOpen ? "max-h-40 opacity-100" : "max-h-0 opacity-0"
+          isOpen ? "opacity-100" : "max-h-0 opacity-0"
         } md:hidden transition-all duration-300 bg-gray-700 mt-2 rounded-lg shadow-lg overflow-hidden`}
       >
         <ul className="flex flex-col items-center space-y-4 p-6 text-gray-300">

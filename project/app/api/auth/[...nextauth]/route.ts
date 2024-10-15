@@ -1,7 +1,13 @@
 import NextAuth from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
-import CredentialProvider from "next-auth/providers/credentials";
+import CredentialsProvider from "next-auth/providers/credentials";
+
+interface User {
+  id: string;
+  name: string;
+  email: string;
+}
 
 const handler = NextAuth({
   providers: [
@@ -13,16 +19,24 @@ const handler = NextAuth({
       clientId: process.env.GITHUB_CLIENT_ID || "",
       clientSecret: process.env.GITHUB_CLIENT_SECRET || "",
     }),
-    CredentialProvider({
+    CredentialsProvider({
+      name: "Credentials",
       credentials: {
-        username: { label: "Username", type: "text" },
+        email: { label: "email", type: "email" },
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        const { username, password } = credentials;
-        return {
-          name: username,
-        };
+        const { email, password } = credentials || {};
+        if (email && password) {
+          const user: User = {
+            id: "1",
+            email: email!,
+            name: email!.split("@")[0],
+          };
+          return user;
+        } else {
+          return null;
+        }
       },
     }),
   ],
@@ -30,7 +44,6 @@ const handler = NextAuth({
   pages: {
     signIn: "/login",
     signOut: "/logout",
-    error: "/error",
   },
 });
 
