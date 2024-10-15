@@ -14,12 +14,12 @@ export default function RecipeCard({
   };
 }) {
   return (
-    <div className="bg-white shadow-md rounded-lg p-4 w-1/2 my-3">
+    <div className="bg-white shadow-md rounded-lg p-4 w-1/2 my-3 flex flex-col gap-3">
       {/* 제목 */}
       <h2 className="text-2xl font-bold text-gray-800 mb-2">{recipe.title}</h2>
 
       {/* 태그들 */}
-      <div className="flex space-x-2 mb-4">
+      <div className="flex flex-wrap gap-2 space-x-2 mb-4">
         {recipe.tags.map((tag, index) => {
           return (
             <span

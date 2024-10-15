@@ -164,7 +164,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
           </div>
 
           {/* 태그 */}
-          <div className="flex gap-1 my-5">
+          <div className="flex flex-wrap gap-1 my-5">
             {editing
               ? recipe.tags.map((tag, index) => (
                   <div
@@ -207,7 +207,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
             {editing && (
               <button
                 onClick={() => handleAddField("tags")}
-                className="bg-blue-500 text-white px-4 py-2 rounded-lg"
+                className="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg"
               >
                 태그 추가
               </button>

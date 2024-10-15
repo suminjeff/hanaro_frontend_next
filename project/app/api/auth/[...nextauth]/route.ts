@@ -1,13 +1,7 @@
-import NextAuth from "next-auth";
+import NextAuth, { User } from "next-auth";
 import GoogleProvider from "next-auth/providers/google";
 import GithubProvider from "next-auth/providers/github";
 import CredentialsProvider from "next-auth/providers/credentials";
-
-interface User {
-  id: string;
-  name: string;
-  email: string;
-}
 
 const handler = NextAuth({
   providers: [
@@ -28,6 +22,7 @@ const handler = NextAuth({
       async authorize(credentials) {
         const { email, password } = credentials || {};
         if (email && password) {
+          // 실제 사용자 인증 로직 추가
           const user: User = {
             id: "1",
             email: email!,
@@ -35,6 +30,7 @@ const handler = NextAuth({
           };
           return user;
         } else {
+          console.error("이메일 또는 비밀번호가 제공되지 않았습니다.");
           return null;
         }
       },

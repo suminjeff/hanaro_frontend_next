@@ -68,7 +68,7 @@ export default function LoginPage() {
         </button>
         <div className="w-full flex flex-col space-y-3">
           <button
-            className="w-full py-2 px-4 bg-red-500 text-white rounded-md hover:bg-gray-800 transition duration-200"
+            className="w-full py-2 px-4 bg-red-500 text-white rounded-md hover:bg-red-600 transition duration-200"
             onClick={() =>
               signIn("google", {
                 callbackUrl: "/recipe",

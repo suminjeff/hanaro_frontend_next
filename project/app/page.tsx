@@ -13,13 +13,13 @@ export default function HomePage() {
         <p className="mt-4 text-lg text-gray-600">레시피 만들기 웹사이트</p>
         {session?.user ? (
           <Link href={"/recipe"}>
-            <button className="mt-6 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+            <button className="mt-6 px-4 py-2 text-white bg-green-500 rounded hover:bg-green-600">
               시작하기
             </button>
           </Link>
         ) : (
           <Link href={"/login"}>
-            <button className="mt-6 px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700">
+            <button className="mt-6 px-4 py-2 text-white bg-blue-500 rounded hover:bg-blue-600">
               로그인하기
             </button>
           </Link>

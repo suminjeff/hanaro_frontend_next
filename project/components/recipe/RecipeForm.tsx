@@ -86,7 +86,7 @@ export default function RecipeForm() {
 
     const newRecipe = {
       id: Date.now(),
-      title,
+      title: title ? title : "제목없음",
       tags: tags.map(({ value, color }) => {
         return { value, color };
       }),
@@ -109,7 +109,7 @@ export default function RecipeForm() {
   };
 
   return (
-    <form className="flex flex-col justify-center items-center w-full h-full overflow-auto p-6 space-y-6 bg-white">
+    <form className="flex flex-col justify-center items-center w-full min-h-full shadow-lg rounded-lg overflow-auto px-16 py-12 gap-10 bg-white">
       <p className="text-2xl font-bold">새 레시피 추가</p>
       <div className="w-full">
         <label
@@ -145,7 +145,7 @@ export default function RecipeForm() {
           />
           <button
             onClick={handleAddTag}
-            className="w-20 py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+            className="w-20 py-2 px-4 bg-purple-500 text-white rounded-md hover:bg-purple-600 transition duration-200"
           >
             추가
           </button>
@@ -196,7 +196,7 @@ export default function RecipeForm() {
           />
           <button
             onClick={handleAddIngredient}
-            className="w-20 py-2 px-4 bg-green-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+            className="w-20 py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-200"
           >
             추가
           </button>
@@ -246,7 +246,7 @@ export default function RecipeForm() {
           />
           <button
             onClick={handleAddOrder}
-            className="w-20 py-2 px-4 bg-green-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
+            className="w-20 py-2 px-4 bg-green-500 text-white rounded-md hover:bg-green-600 transition duration-200"
           >
             추가
           </button>
@@ -281,7 +281,7 @@ export default function RecipeForm() {
       </div>
       <button
         onClick={handleSaveRecipe}
-        className="w-full py-3 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-700 transition duration-200"
+        className="w-full py-3 px-6 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition duration-200"
       >
         레시피 저장
       </button>
