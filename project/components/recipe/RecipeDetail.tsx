@@ -4,6 +4,20 @@ import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import RecipeTimer from "./RecipeTimer";
 
+// 랜덤 색상 생성 함수
+const getRandomColor = () => {
+  const colors = [
+    "bg-red-500",
+    "bg-green-500",
+    "bg-blue-500",
+    "bg-yellow-500",
+    "bg-purple-500",
+    "bg-pink-500",
+    "bg-teal-500",
+  ];
+  return colors[Math.floor(Math.random() * colors.length)];
+};
+
 export default function RecipeDetail({ recipeId }: { recipeId: string }) {
   const router = useRouter();
   const { data: session } = useSession();
@@ -56,6 +70,14 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
     const value = e.target.value;
     setRecipe((prev) => {
       if (index !== undefined) {
+        if (field === "tags") {
+          return {
+            ...prev,
+            [field]: prev[field].map((item, i) =>
+              i === index ? { ...item, value } : item
+            ),
+          };
+        }
         return {
           ...prev,
           [field]: prev[field].map((item, i) => (i === index ? value : item)),
@@ -68,7 +90,10 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
   const handleAddField = (field) => {
     setRecipe((prev) => ({
       ...prev,
-      [field]: [...prev[field], ""],
+      [field]:
+        field === "tags"
+          ? [...prev[field], { value: "", color: getRandomColor() }]
+          : [...prev[field], ""],
     }));
   };
 
@@ -180,7 +205,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
                     />
 
                     <svg
-                      onClick={() => handleRemoveField("orders", index)}
+                      onClick={() => handleRemoveField("tags", index)}
                       className="w-5 h-5 cursor-pointer text-white"
                       fill="none"
                       stroke="currentColor"

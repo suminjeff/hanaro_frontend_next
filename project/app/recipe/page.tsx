@@ -26,11 +26,14 @@ export default function RecipePage() {
   }, [session]);
 
   return (
-    <div className="flex flex-col justify-center items-center h-4/5">
+    <div className="flex flex-col justify-center items-center min-h-96">
       {recipes.length > 0 ? (
-        recipes.map((item, index) => {
-          return <RecipeCard recipe={item} key={index} />;
-        })
+        <>
+          <p className="my-10 text-2xl font-bold">나의 레시피 목록</p>
+          {recipes.map((item, index) => {
+            return <RecipeCard recipe={item} key={index} />;
+          })}
+        </>
       ) : (
         <div className="text-center flex flex-col justify-center items-center gap-5">
           <p className="text-gray-500 text-lg">레시피가 없습니다</p>
