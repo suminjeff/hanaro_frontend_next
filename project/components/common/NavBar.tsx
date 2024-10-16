@@ -118,14 +118,14 @@ export default function NavBar() {
           <li className="w-full text-center hover:bg-gray-600 rounded-lg transition duration-300">
             {session ? (
               <button className="block py-2 w-full" onClick={() => signOut()}>
-                SignOut
+                로그아웃
               </button>
             ) : (
               <Link
                 href="/login"
                 className={`block py-2 w-full ${isActive("/login")}`}
               >
-                Login
+                로그인
               </Link>
             )}
           </li>
@@ -136,7 +136,7 @@ export default function NavBar() {
                   href="/recipe"
                   className={`block py-2 w-full ${isActive("/recipe")}`}
                 >
-                  Recipe List
+                  레시피 목록
                 </Link>
               </li>
               <li className="w-full text-center hover:bg-gray-600 rounded-lg transition duration-300">
@@ -144,7 +144,7 @@ export default function NavBar() {
                   href="/recipe/add"
                   className={`block py-2 w-full ${isActive("/recipe/add")}`}
                 >
-                  Create Recipe
+                  레시피 만들기
                 </Link>
               </li>
             </>

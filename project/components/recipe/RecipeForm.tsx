@@ -24,13 +24,13 @@ export default function RecipeForm() {
 
   const router = useRouter();
 
-  const [title, setTitle] = useState("");
-  const [tag, setTag] = useState("");
+  const [title, setTitle] = useState<string>("");
+  const [tag, setTag] = useState<string>("");
   const [tags, setTags] = useState<{ value: string; color: string }[]>([]);
-  const [ingredient, setIngredient] = useState("");
-  const [ingredients, setIngredients] = useState([]);
-  const [order, setOrder] = useState("");
-  const [orders, setOrders] = useState([]);
+  const [ingredient, setIngredient] = useState<string>("");
+  const [ingredients, setIngredients] = useState<string[]>([]);
+  const [order, setOrder] = useState<string>("");
+  const [orders, setOrders] = useState<string[]>([]);
 
   const handleAddTag = (e) => {
     e.preventDefault();

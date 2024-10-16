@@ -9,6 +9,9 @@ export default function LoginPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!email || !password) {
+      alert("이메일과 비밀번호를 올바르게 입력해주세요");
+    }
     const result = await signIn("credentials", {
       redirect: true,
       email: email,
