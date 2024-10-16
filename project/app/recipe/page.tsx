@@ -26,7 +26,12 @@ export default function RecipePage() {
   }, [session]);
 
   return (
-    <div className="flex flex-col justify-center items-center min-h-96">
+    <div
+      className="flex flex-col justify-center items-center"
+      style={{
+        minHeight: "80%",
+      }}
+    >
       {recipes.length > 0 ? (
         <>
           <p className="my-10 text-2xl font-bold">나의 레시피 목록</p>

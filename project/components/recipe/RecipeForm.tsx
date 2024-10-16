@@ -83,16 +83,27 @@ export default function RecipeForm() {
     }
 
     const savedRecipes = JSON.parse(localStorage.getItem(user.name) || "[]");
-
+    const id = Date.now();
     const newRecipe = {
-      id: Date.now(),
+      id,
       title: title ? title : "제목없음",
       tags: tags.map(({ value, color }) => {
         return { value, color };
       }),
       ingredients,
       orders,
-      versions: [],
+      versions: [
+        {
+          id,
+          title: title ? title : "제목없음",
+          tags: tags.map(({ value, color }) => {
+            return { value, color };
+          }),
+          ingredients,
+          orders,
+          updatedAt: id,
+        },
+      ],
     };
 
     const updatedRecipes = [...savedRecipes, newRecipe];

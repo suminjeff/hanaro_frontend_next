@@ -29,6 +29,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
     tags: [],
     versions: [],
   });
+
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
 
@@ -47,9 +48,21 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
   const handleSaveRecipe = () => {
     const username = session?.user?.name;
     const recipes = JSON.parse(localStorage.getItem(username)) || [];
+
+    // 수정된 버전 추가
+    const updatedRecipe = {
+      ...recipe,
+      versions: [
+        ...recipe.versions,
+        { ...recipe, updatedAt: new Date().toISOString() },
+      ],
+    };
+    setRecipe(updatedRecipe);
+    // 해당 레시피 업데이트
     const updatedRecipes = recipes.map((r) =>
-      r.id.toString() === recipeId ? { ...r, ...recipe } : r
+      r.id.toString() === recipeId ? updatedRecipe : r
     );
+
     localStorage.setItem(username, JSON.stringify(updatedRecipes));
     setEditing(false);
     alert("레시피 수정 완료");
@@ -106,6 +119,38 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
     }));
   };
 
+  const handleRestoreVersion = (versionIndex) => {
+    setRecipe((prev) => {
+      const { versions, ...rest } = prev; // 현재 recipe에서 versions를 제외한 나머지 속성들만 추출
+      const selectedVersion = prev.versions[versionIndex]; // 복원할 버전 가져오기
+
+      return {
+        ...selectedVersion, // 선택한 버전의 데이터로 덮어쓰기
+        versions, // 기존의 versions는 그대로 유지
+      };
+    });
+  };
+
+  const getDateString = (inputDate) => {
+    const date = new Date(inputDate);
+
+    const year = date.getFullYear();
+    const month = ("0" + (date.getMonth() + 1)).slice(-2);
+    const day = ("0" + date.getDate()).slice(-2);
+
+    let hours = date.getHours();
+    const minutes = ("0" + date.getMinutes()).slice(-2);
+
+    // 오전/오후 구분
+    const period = hours >= 12 ? "오후" : "오전";
+    hours = hours % 12 || 12; // 12시간제로 변환 (0시를 12시로 표시)
+
+    const timeString = `${period} ${hours}:${minutes}`;
+    const dateString = `${year}년 ${month}월 ${day}일 ${timeString}`;
+
+    return dateString;
+  };
+
   return (
     <>
       {loading ? (
@@ -127,7 +172,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
           )}
 
           {/* 조리 과정 */}
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+          <h2 className="text-2xl font-semibold text-gray-700 mt-10 mb-4">
             조리 과정
           </h2>
           <div className="space-y-4">
@@ -242,7 +287,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
           </div>
 
           {/* 재료 목록 */}
-          <h2 className="text-2xl font-semibold text-gray-700 mb-4">
+          <h2 className="text-2xl font-semibold text-gray-700 mt-10 mb-4">
             재료 목록
           </h2>
           <ul className="space-y-2">
@@ -305,6 +350,40 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
               </button>
             )}
           </ul>
+
+          {/* 버전 목록 */}
+
+          {recipe.versions.length > 1 && (
+            <>
+              <h2 className="text-2xl font-semibold text-gray-700 mt-10 mb-4">
+                버전 목록
+              </h2>
+              <ul>
+                {recipe.versions.map((version, index) => {
+                  return (
+                    <li key={index} className="flex gap-4 items-center my-3">
+                      {index === 0 ? (
+                        <button
+                          onClick={() => handleRestoreVersion(index)}
+                          className="bg-green-500 text-white px-3 py-1 rounded-lg hover:bg-green-600 transition duration-300"
+                        >
+                          <span className="font-bold">원본 복원</span>
+                        </button>
+                      ) : (
+                        <button
+                          onClick={() => handleRestoreVersion(index)}
+                          className="bg-purple-500 text-white px-3 py-1 rounded-lg hover:bg-purple-600 transition duration-300"
+                        >
+                          <span className="font-bold">버전 {index} 복원</span>
+                        </button>
+                      )}
+                      <span>수정일: ({getDateString(version.updatedAt)})</span>
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
 
           {/* 목록으로 이동 버튼 */}
           <div className="flex gap-3 my-5">
