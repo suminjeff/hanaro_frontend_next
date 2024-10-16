@@ -3,6 +3,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import RecipeTimer from "./RecipeTimer";
+import Loading from "../common/Loading";
 
 // 랜덤 색상 생성 함수
 const getRandomColor = () => {
@@ -26,6 +27,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
     orders: [],
     ingredients: [],
     tags: [],
+    versions: [],
   });
   const [loading, setLoading] = useState(true);
   const [editing, setEditing] = useState(false);
@@ -107,7 +109,7 @@ export default function RecipeDetail({ recipeId }: { recipeId: string }) {
   return (
     <>
       {loading ? (
-        <p>Loading...</p>
+        <Loading />
       ) : (
         <div className="bg-white shadow-lg rounded-lg p-6">
           {/* 레시피 제목 */}
